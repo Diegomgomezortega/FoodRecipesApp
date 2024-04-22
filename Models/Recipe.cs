@@ -16,6 +16,7 @@ namespace FoodRecipesApp.Models
         public DateTime DateCreated { get; set; } = DateTime.Now;
         [OneToMany(CascadeOperations=CascadeOperation.All)]
         public List<Procedure> Procedures { get; set; }
+        [ManyToOne(CascadeOperations = CascadeOperation.All)]
         public Origin Origin { get; set; }
         [ForeignKey(typeof(Origin))]
         public int OriginId { get; set; }
