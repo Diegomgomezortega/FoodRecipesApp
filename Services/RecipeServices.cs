@@ -1,38 +1,48 @@
 ﻿using FoodRecipesApp.Interfaces;
 using FoodRecipesApp.Models;
+using SQLiteNetExtensionsAsync.Extensions;
 
 namespace FoodRecipesApp.Services
 {
-    public class RecipeServices : IRecipeServices
+    public class RecipeServices :BaseServices, IRecipeServices
     {
-        public Task<int> AddAsync(Recipe recipe)
+        public async Task<int> AddAsync(Recipe recipe)
         {
-            throw new NotImplementedException();
+            if (recipe is null)
+                return (int)System.Net.HttpStatusCode.BadRequest;
+            int result = await connection.InsertAsync(recipe);
+            return result;
         }
 
-        public Task<int> DeleteAsync(Recipe recipe)
+        public async Task<int> DeleteAsync(Recipe recipe)
         {
-            throw new NotImplementedException();
+            var result = await connection?.DeleteAsync(recipe);
+            return result;
         }
 
-        public Task<List<Recipe>> GetAllAsync()
+        public async Task<List<Recipe>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var result = await connection.GetAllWithChildrenAsync<Recipe>(recursive:true);
+            if (result.Count == 0) return null;
+            return result.ToList();
         }
 
-        public Task<List<Recipe>> GetAllByOriginIdAsync(int originId)
+        public async Task<List<Recipe>> GetAllByOriginIdAsync(int originId)
         {
-            throw new NotImplementedException();
+            var result = await connection.GetAllWithChildrenAsync<Recipe>(x => x.OriginId == originId, recursive:true);
+            return result;
         }
 
-        public Task<Recipe> GetAsync(int id)
+        public async Task<Recipe> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await connection.Table<Recipe>().Where(x => x.Id == id).FirstOrDefaultAsync();
+            return result;
         }
 
-        public Task<int> UpdateAsync(Recipe recipe)
+        public async Task<int> UpdateAsync(Recipe recipe)
         {
-            throw new NotImplementedException();
+           var result= await connection.UpdateAsync(recipe);
+            return result;
         }
     }
 }

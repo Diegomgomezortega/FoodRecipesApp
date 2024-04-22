@@ -3,26 +3,32 @@ using FoodRecipesApp.Models;
 
 namespace FoodRecipesApp.Services
 {
-    public class OriginServices : IOriginService
+    public class OriginServices : BaseServices, IOriginService
     {
-        public Task<int> AddAsync(Origin origin)
+        public async Task<int> AddAsync(Origin origin)
         {
-            throw new NotImplementedException();
+            if (origin is null)
+                return (int)System.Net.HttpStatusCode.BadRequest;
+            int result= await connection.InsertAsync(origin);
+            return result;
         }
 
-        public Task<int> DeleteAsync(Origin origin)
+        public async Task<int> DeleteAsync(Origin origin)
         {
-            throw new NotImplementedException();
+           var result= await connection?.DeleteAsync(origin);
+            return result;
         }
 
-        public Task<List<Origin>> GetAllAsync()
+        public async Task<List<Origin>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var result= await connection.Table<Origin>().ToListAsync();
+            return result;
         }
 
-        public Task<int> UpdateAsync(Origin origin)
+        public async Task<int> UpdateAsync(Origin origin)
         {
-            throw new NotImplementedException();
+            var result= await connection.UpdateAsync(origin);
+            return result;
         }
     }
 }

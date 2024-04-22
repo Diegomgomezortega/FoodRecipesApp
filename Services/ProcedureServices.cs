@@ -1,38 +1,49 @@
 ﻿using FoodRecipesApp.Interfaces;
 using FoodRecipesApp.Models;
+using SQLiteNetExtensionsAsync.Extensions;
 
 namespace FoodRecipesApp.Services
 {
-    public class ProcedureServices : IProcedureServices
+    public class ProcedureServices : BaseServices, IProcedureServices
     {
-        public Task<int> AddAsync(Procedure procedure)
+        public async Task<int> AddAsync(Procedure procedure)
         {
-            throw new NotImplementedException();
+            if (procedure is null)
+                return (int)System.Net.HttpStatusCode.BadRequest;
+            int result = await connection.InsertAsync(procedure);
+            return result;
         }
 
-        public Task<int> DeleteAsync(Procedure procedure)
+        public async Task<int> DeleteAsync(Procedure procedure)
         {
-            throw new NotImplementedException();
+            var result = await connection?.DeleteAsync(procedure);
+            return result;
         }
 
-        public Task<List<Recipe>> GetAllAsync()
+        public async Task<List<Procedure>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var result = await connection.GetAllWithChildrenAsync<Procedure>(recursive:true);
+            if (result.Count == 0) return null;
+            return result.ToList();
         }
 
-        public Task<List<Recipe>> GetAllByRecipeIdAsync(int recipeId)
+        public async Task<List<Procedure>> GetAllByRecipeIdAsync(int recipeId)
         {
-            throw new NotImplementedException();
+            var result = await connection.GetAllWithChildrenAsync<Procedure>(x=>x.RecipeId==recipeId, recursive: true);
+            if (result.Count == 0) return null;
+            return result.ToList();
         }
 
-        public Task<Recipe> GetAsync(int id)
+        public async Task<Procedure> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await connection.Table<Procedure>().Where(x=>x.Id==id).FirstOrDefaultAsync();
+            return result;
         }
 
-        public Task<int> UpdateAsync(Procedure procedure)
+        public async Task<int> UpdateAsync(Procedure procedure)
         {
-            throw new NotImplementedException();
+            var result = await connection.UpdateAsync(procedure);
+            return result;
         }
     }
 }
