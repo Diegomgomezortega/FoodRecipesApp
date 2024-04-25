@@ -14,7 +14,7 @@ namespace FoodRecipesApp.Models
         public string TimeNeeded { get; set; }
         [ManyToOne(CascadeOperations =CascadeOperation.All)]
         public Recipe Recipe { get; set; }
-        [ForeignKey(nameof(Recipe))]
+        [ForeignKey(typeof(Recipe))]
         public int RecipeId { get; set; }
 
 
